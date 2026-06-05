@@ -1,8 +1,8 @@
-# Contribution [#]: [Issue Title]
+# Contribution 1: Add Microsoft Teams as notification provider
 
 **Contribution Number:** 1  
 **Student:** Ignacio De La Cruz  
-**Issue:** [Add Microsoft Teams as notification provider](https://github.com/Portabase/portabase/issues/260)   
+**Issue:** [Link](https://github.com/Portabase/portabase/issues/260)   
 **Status:** Phase I 
 
 ---
