@@ -1,15 +1,17 @@
 # Contribution [#]: [Issue Title]
 
-**Contribution Number:** [1 / 2 / 3]  
-**Student:** [Your Name]  
-**Issue:** [GitHub issue link]  
-**Status:** [Phase I / Phase II / Phase III / Phase IV] [In Progress / Complete]
+**Contribution Number:** 1  
+**Student:** Ignacio De La Cruz  
+**Issue:** [Add Microsoft Teams as notification provider](https://github.com/Portabase/portabase/issues/260)   
+**Status:** Phase I 
 
 ---
 
 ## Why I Chose This Issue
 
-[1-2 paragraphs explaining why this issue interests you, how it matches your skills/learning goals, what you hope to learn]
+I am interested in tackling the "Add Microsoft Teams as notification provider" issue because it aligns well with my experience building full-stack applications. Throughout various projects, I have worked with React-based frontends, REST APIs, and backend development. Since this issue involves both implementing backend notification logic and creating frontend configuration components, it closely matches the types of technologies and challenges I have worked with in my coursework and personal projects.
+
+By contributing to this issue, I hope to gain experience working within an established open-source codebase and strengthen my TypeScript skills in a real-world development environment. I am also interested in learning more about extending modular application architectures and integrating third-party services into a production application.
 
 ---
 
