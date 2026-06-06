@@ -19,19 +19,40 @@ By contributing to this issue, I hope to gain experience working within an estab
 
 ### Problem Description
 
-[In your own words, what's broken or missing?]
+Portabase uses several third-party providers to send alerts to users. 
 
 ### Expected Behavior
 
-[What should happen?]
+Microsoft teams should be added as an option to send alerts to users.
 
 ### Current Behavior
 
-[What actually happens?]
+Currently Microsoft teams is not an option for sending alerts to users. 
 
 ### Affected Components
 
-[Which parts of the codebase are involved?]
+1. Create Microsoft Teams notification provider
+   - Implement sendTeams in:
+src/features/notifications/providers/teams.ts
+
+2. Register provider in notification system
+   - Add sendTeams to provider handlers: src/features/notifications/providers/index.ts
+
+Extend provider type system by adding teams to ProviderKind:
+src/features/notifications/types.ts
+
+3. Implement Teams configuration form (schema + UI)
+   - Create validation schema: src/components/wrappers/dashboard/admin/channels/channel/channel-form/providers/notifications/forms/teams.schema.ts
+
+   - Create UI form component: src/components/wrappers/dashboard/admin/channels/channel/channel-form/providers/notifications/forms/teams.form.tsx
+
+4. Integrate Teams into UI provider system
+   - Update channel form schema: src/components/wrappers/dashboard/admin/channels/channel/channel-form/channel-form.schema.ts
+
+   - Update provider registry: src/components/wrappers/dashboard/admin/channels/helpers/notification.tsx
+Remove preview: true for Teams provider.
+
+   - Update form renderer: Add teams case in renderChannelForm in: src/components/wrappers/dashboard/admin/channels/helpers/common.tsx
 
 ---
 
@@ -39,19 +60,52 @@ By contributing to this issue, I hope to gain experience working within an estab
 
 ### Environment Setup
 
-[Notes on setting up your local development environment - challenges you faced, how you solved them]
+
+1. Clone the repository
+   - git clone https://github.com/Portabase/portabase.git
+   - cd portabase
+
+2. Install dependencies
+   - install nvm
+      - install homebrew
+         - /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+     - install nvm via homebrew: 
+        - brew install nvm
+     - Create the NVM directory:
+        - mkdir ~/.nvm
+     - Reload your terminal configuration so the changes take effect:
+        - source ~/.zshrc
+   - install node via nvm
+      - nvm install --lts
+      - nvm use --lts
+   - pnpm install
+      - For macos apple silicon:
+         - curl -fsSL https://get.pnpm.io/install.sh | sh -
+
+
+3. Environment configuration
+   - Copy the example environment file and adjust values if necessary:
+      - cp .env.example .env
+
+4. Start in development mode
+   - make up
+
+The above four steps are the instructions given in the project wiki for contributors. However before starting in development mode you first need to get the database running locally: 
+- docker compose up -d db
+
 
 ### Steps to Reproduce
 
-1. [Step 1]
-2. [Step 2]
-3. [Observed result]
+1. Log onto app using credentials from .env
+2. On left under Administration, navigate to Notifications > Channels.
+3. Click + Add Notification Channel
+4. Microsoft Teams button is unclickable
 
 ### Reproduction Evidence
 
-- **Commit showing reproduction:** [Link to commit in your fork]
-- **Screenshots/logs:** [If applicable]
-- **My findings:** [What you discovered during reproduction]
+- **Commit showing reproduction:** [Link to commit in your fork](https://github.com/Malilav/portabase/pull/new/fix-issue-260)
+- **Screenshots/logs:** ![Microsoft teams coming soon](./Microsoft_teams_pre.png)
+- **My findings:** Microsoft teams option for notification provider is greyed out and labled as coming soon.
 
 ---
 
@@ -59,30 +113,69 @@ By contributing to this issue, I hope to gain experience working within an estab
 
 ### Analysis
 
-[Your analysis of the root cause - what's causing the issue?]
+Feature is not yet implemented.
 
 ### Proposed Solution
 
-[High-level description of your fix approach]
+Add Microsoft Teams as notification provider
 
 ### Implementation Plan
 
 Using UMPIRE framework (adapted):
 
-**Understand:** [Restate the problem]
+**Understand:** 
+Portabase currently supports multiple third-party webhook integrations (like Slack, Telegram, and Discord) to alert users about database backup statuses and agent connectivity. However, it currently lacks support for Microsoft Teams.
 
-**Match:** [What similar patterns/solutions exist in the codebase?]
+**Match:** 
+I will use the existing slack.ts and discord.ts backend provider files (located in src/features/notifications/providers/) as a structural blueprint for how to format the outbound fetch request and error handling. For the frontend, I will look at the existing Zod schemas and ShadcnUI form components used for Discord/Slack to ensure my new Teams configuration form matches the project's design system and validation standards.
 
 **Plan:** [Step-by-step implementation plan]
-1. [Modify file X to do Y]
-2. [Add function Z]
-3. [Update tests]
+1. What is the root cause/context?
+   - The codebase utilizes a strictly typed registry system (ProviderKind) and a unified channel form renderer. To add a new provider, it must be injected into multiple specific layers of the application—from the TypeScript definitions up to the React switch statements that render the UI.
 
-**Implement:** [Link to your branch/commits as you work]
+2. What is the proposed fix/implementation?
+   - I will implement this feature in two main slices:
 
-**Review:** [Self-review checklist - does it follow the project's contribution guidelines?]
+      - Backend: Define the new teams type, create the sendTeams webhook execution logic, and register it in the main provider handler.
 
-**Evaluate:** [How will you verify it works?]
+      - Frontend: Write a Zod validation schema for the Teams configuration (requiring a valid Webhook URL string), build the React form UI component, and update the global channel form schema and renderer switch statement to display the new UI.
+
+3. What files will I touch?
+I will create two new files and modify five existing files:
+
+   - (New) src/features/notifications/providers/teams.ts
+
+   - (New) src/components/wrappers/dashboard/admin/channels/channel/channel-form/providers/notifications/forms/teams.schema.ts
+
+   - (New) src/components/wrappers/dashboard/admin/channels/channel/channel-form/providers/notifications/forms/teams.form.tsx
+
+   - (Modify) src/features/notifications/providers/index.ts
+
+   - (Modify) src/features/notifications/types.ts
+
+   - (Modify) src/components/wrappers/dashboard/admin/channels/channel/channel-form/channel-form.schema.ts
+
+   - (Modify) src/components/wrappers/dashboard/admin/channels/helpers/notification.tsx
+
+   - (Modify) src/components/wrappers/dashboard/admin/channels/helpers/common.tsx
+
+**Implement:** [Link to my working branch/PR will go here once coded]()
+
+**Review:** 
+I will self-review my code against Portabase's CONTRIBUTING.md. Specifically, I will ensure that my new sendTeams function is strictly typed using TypeScript, that the React components utilize the existing UI component library properly without inline styling, and that I have run the project's linter/formatter before committing. I will also verify that preview: true is fully removed from the Teams provider so it registers as an active feature
+
+**Evaluate:** 
+1. To test this feature end-to-end, I will:
+
+2. Create a free Microsoft Teams workspace and generate a live Incoming Webhook URL.
+
+3. Spin up the local Portabase Next.js and PostgreSQL development environment.
+
+4. Navigate to the local dashboard and configure a new Microsoft Teams notification channel using my live webhook URL.
+
+5. Trigger a test notification from the Portabase system and verify that the payload successfully appears in my external Microsoft Teams desktop client.
+
+6. Capture the mandatory validation screenshots (Add dialog, Create mode, Edit mode) to append to my Pull Request.
 
 ---
 
