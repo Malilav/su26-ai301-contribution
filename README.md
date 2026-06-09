@@ -159,7 +159,7 @@ I will create two new files and modify five existing files:
 
    - (Modify) src/components/wrappers/dashboard/admin/channels/helpers/common.tsx
 
-**Implement:** [Link to my working branch/PR will go here once coded]()
+**Implement:** [Add Microsoft Teams as notification provider](https://github.com/Portabase/portabase/pull/313)
 
 **Review:** 
 I will self-review my code against Portabase's CONTRIBUTING.md. Specifically, I will ensure that my new sendTeams function is strictly typed using TypeScript, that the React components utilize the existing UI component library properly without inline styling, and that I have run the project's linter/formatter before committing. I will also verify that preview: true is fully removed from the Teams provider so it registers as an active feature
@@ -194,15 +194,31 @@ I will self-review my code against Portabase's CONTRIBUTING.md. Specifically, I 
 
 ### Manual Testing
 
-[What you tested manually and results]
+1. Created a free Microsoft Teams workspace and generate a live Incoming Webhook URL.
+
+2. Spun up the local Portabase Next.js and PostgreSQL development environment.
+
+3. Navigated to the local dashboard and configure a new Microsoft Teams notification channel using my live webhook URL.
+
+4. Triggered a test notification from the Portabase system and verify that the payload successfully appears in my external Microsoft Teams desktop client.
+
+5. Captured the mandatory validation screenshots (Add dialog, Create mode, Edit mode) to append to my Pull Request.
 
 ---
 
 ## Implementation Notes
 
-### Week [X] Progress
+### Week [3] Progress
 
-[What you built this week, challenges faced, decisions made]
+What you built: 
+Added microsoft teams as notification provider and updated database schema.
+
+Challenges face:
+Merging local feature branch with remote main branch prior to creating PR led to breaking the feature I had implemented. Spent several hours troubleshooting, problem ended up being that the database had been updated while I was working on the feature branch and my local database in conflict with the updated code. Resolved by wiping local databse volume and rebuilding using the updated schema. 
+
+Decisions made:
+Original issue listed out implementation details for adding feature. I followed the instructions but feature was not working. Decided updating the database schema was within issue scope, in order to successfully implement feature. 
+
 
 ### Week [Y] Progress
 
@@ -210,17 +226,80 @@ I will self-review my code against Portabase's CONTRIBUTING.md. Specifically, I 
 
 ### Code Changes
 
-- **Files modified:** [List]
-- **Key commits:** [Links to important commits]
-- **Approach decisions:** [Why you chose certain approaches]
+- **Files modified:**
+   1. Created Microsoft Teams notification provider
+      - Implemented sendTeams in: src/features/channel/notifications/teams.ts
+   2. Registered provider in notification system
+      - Added sendTeams to provider handlers: src/features/channel/notifications/index.ts
+      - Extended provider type system by adding teams to ProviderKind: src/features/notifications/notifications.types.ts
+   3. Implemented Teams configuration form (schema + UI)
+      - Created validation schema: src/features/channel/notifications/teams.schema.ts
+      - Created UI form component: src/features/channel/notifications/teams.form.tsx
+   4. Integrated Teams into UI provider system
+      - Updated channel form schema: src/features/channel/channel-form.schema.ts
+      - Updated provider registry: src/features/channel/channels-notification-helper.tsx
+         - Removed preview: true for Teams provider.
+      - Updated form renderer:
+         - Added teams case in renderChannelForm in: src/features/channel/channels-helpers.tsx
+   5. Updated database to include teams as provider
+      - Added migration instruction: src/db/migrations/0062_futuristic_dragon_lord.sql
+      - Updated schema: src/db/schema/09_notification-channel.ts
+
+- **Key commits:**
+   - [feat: Add Microsoft Teams as notification provider (issue 260)](https://github.com/Portabase/portabase/pull/313/changes/2328fa70bc2e29e24625736ea977e4603e149e0e)
+      - committed main changes to implement feature
+   - [Merge updates from main](https://github.com/Portabase/portabase/pull/313/changes/5b6399891e8e122eae851ff9a938ff726b77ba0a)
+      - updated local feature branch with changes from main, broke feature when manually testing
+   - [Update database migration](https://github.com/Portabase/portabase/pull/313/changes/7132db9b450fc8e89f5b4ff0cd735bd422eaed7f)
+      - added database migration so that remote database implements changes I added to database schema
+
+
+- **Approach decisions:**
+   - For all changes I followed the existing coding patterns of the other notification providers previously implemented in order to maintain consistency in the codebase. 
 
 ---
 
 ## Pull Request
 
-**PR Link:** [GitHub PR URL when submitted]
+**PR Link:** [GitHub PR URL when submitted](https://github.com/Portabase/portabase/pull/313)
 
-**PR Description:** [Draft or final PR description - much of the content above can be adapted]
+**PR Description:** 
+- Adds Microsoft Teams as notification provider #260 
+
+### Implementation
+#### 1. Created Microsoft Teams notification provider
+- Implemented sendTeams in: src/features/channel/notifications/teams.ts
+#### 2. Registered provider in notification system
+- Added sendTeams to provider handlers: src/features/channel/notifications/index.ts
+- Extended provider type system by adding teams to ProviderKind:
+src/features/notifications/notifications.types.ts
+#### 3. Implemented Teams configuration form (schema + UI)
+- Created validation schema: src/features/channel/notifications/teams.schema.ts
+- Created UI form component: src/features/channel/notifications/teams.form.tsx
+#### 4. Integrated Teams into UI provider system
+- Updated channel form schema: src/features/channel/channel-form.schema.ts
+- Updated provider registry: src/features/channel/channels-notification-helper.tsx
+   - Removed preview: true for Teams provider.
+- Updated form renderer:
+   - Added teams case in renderChannelForm in: src/features/channel/channels-helpers.tsx
+#### 5. Updated database to include teams as provider
+- Added migration instruction: src/db/migrations/0062_futuristic_dragon_lord.sql
+- Updated schema: src/db/schema/09_notification-channel.ts
+
+### Validation 
+- Screenshots demonstrating:
+#### “Notification Channel” dialog showing Microsoft Teams as an available provider
+<img width="493" height="485" alt="“Notification Channel” dialog showing Microsoft Teams as an available provider" src="https://github.com/user-attachments/assets/7559b5c1-207d-4518-9d91-5fabb0a7ac31" />
+
+#### Microsoft Teams configuration form in create mode
+<img width="493" height="485" alt="Microsoft Teams configuration form in create mode" src="https://github.com/user-attachments/assets/a93cd0c2-d9e8-429c-a612-51bbfc59d592" />
+
+#### Microsoft Teams configuration form in edit mode
+
+<img width="493" height="485" alt="Microsoft Teams configuration form in edit mode" src="https://github.com/user-attachments/assets/a0521f36-1116-450a-a06e-bb368f3552aa" />
+
+
+
 
 **Maintainer Feedback:**
 - [Date]: [Summary of feedback received]
