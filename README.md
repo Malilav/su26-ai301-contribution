@@ -325,9 +325,12 @@ https://github.com/user-attachments/assets/994edebb-cce2-4d74-b983-87081d31168d
 
 ### Technical Skills Gained
 
-- Drizzle ORM & PostgreSQL Migrations: Learned how Drizzle tracks state via snapshot.json files, how to generate new SQL migration files (drizzle-kit generate), and the difference between applying migrations normally versus force-syncing the schema (drizzle-kit push) when local volumes get out of sync.
-- Playwright E2E Testing: Gained exposure to end-to-end testing architecture, specifically how Playwright interacts with the UI, mocks user inputs using regex locators (getByLabel(/Teams Webhook URL/)), and tests both valid and invalid server-action flows.
-- Docker Volume Management: Learned how to safely destroy and rebuild local PostgreSQL data volumes (docker-compose down -v) to reset corrupted local migration states.
+- Drizzle ORM & PostgreSQL Migrations: 
+   - Learned how Drizzle tracks state via snapshot.json files, how to generate new SQL migration files (drizzle-kit generate), and the difference between applying migrations normally versus force-syncing the schema (drizzle-kit push) when local volumes get out of sync.
+- Playwright E2E Testing: 
+   - Gained exposure to end-to-end testing architecture, specifically how Playwright interacts with the UI, mocks user inputs using regex locators (getByLabel(/Teams Webhook URL/)), and tests both valid and invalid server-action flows.
+- Docker Volume Management: 
+   - Learned how to safely destroy and rebuild local PostgreSQL data volumes (docker-compose down -v) to reset corrupted local migration states.
 
 ### Challenges Overcome
 
