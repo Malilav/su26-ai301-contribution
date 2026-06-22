@@ -3,7 +3,7 @@
 **Contribution Number:** 1  
 **Student:** Ignacio De La Cruz  
 **Issue:** [Link](https://github.com/Portabase/portabase/issues/260)   
-**Status:** Phase I 
+**Status:** Phase IV 
 
 ---
 
@@ -103,7 +103,7 @@ The above four steps are the instructions given in the project wiki for contribu
 
 ### Reproduction Evidence
 
-- **Commit showing reproduction:** [Link to commit in your fork](https://github.com/Malilav/portabase/pull/new/fix-issue-260)
+- **Commit showing reproduction:** [Link to commit in your fork](https://github.com/Portabase/portabase/pull/313/commits)
 - **Screenshots/logs:** ![Microsoft teams coming soon](./Microsoft_teams_pre.png)
 - **My findings:** Microsoft teams option for notification provider is greyed out and labled as coming soon.
 
@@ -183,14 +183,15 @@ I will self-review my code against Portabase's CONTRIBUTING.md. Specifically, I 
 
 ### Unit Tests
 
-- [ ] Test case 1: [Description]
-- [ ] Test case 2: [Description]
-- [ ] Test case 3: [Description]
+- [ ] Test case 1: Zod Schema Validation: Verified that TeamsChannelConfigSchema correctly enforces a valid URL format and rejects malformed webhook strings.
+- [ ] Test case 2: Component Rendering Logic: Verified that the UI switch statement correctly maps the teams provider state to render the NotifierTeamsForm component.
+- [ ] Test case 3: Database Enum Acceptance: Verified that the PostgreSQL provider_kind enum successfully accepts the new "teams" value without throwing a 42703 missing column or enum error.
 
 ### Integration Tests
 
-- [ ] Integration scenario 1
-- [ ] Integration scenario 2
+- [ ] Integration scenario 1: Create Invalid Channel (Automated): Playwright navigates the dashboard, attempts to create a Microsoft Teams channel with a mocked invalid webhook URL, and verifies that the frontend correctly displays the server-side error toast.
+- [ ] Integration scenario 2: Delete Invalid Channel (Automated): Playwright successfully deletes the mocked Teams channel and verifies it is removed from the UI and the database.
+- [ ] Integration scenario 3: Valid Channel Flow (Manual/Commented): Successfully generated a mock URL via webhook.site, bypassed Next.js caching, inserted the valid configuration into the fresh database, and verified the successful creation toast in the UI.
 
 ### Manual Testing
 
@@ -220,10 +221,6 @@ Decisions made:
 Original issue listed out implementation details for adding feature. I followed the instructions but feature was not working. Decided updating the database schema was within issue scope, in order to successfully implement feature. 
 
 
-### Week [Y] Progress
-
-[Continue documenting as you work]
-
 ### Code Changes
 
 - **Files modified:**
@@ -244,6 +241,8 @@ Original issue listed out implementation details for adding feature. I followed 
    5. Updated database to include teams as provider
       - Added migration instruction: src/db/migrations/0062_futuristic_dragon_lord.sql
       - Updated schema: src/db/schema/09_notification-channel.ts
+   6. Updated end to end testing
+      - Added teams tests to : e2e/notification/teams.spec.ts
 
 - **Key commits:**
    - [feat: Add Microsoft Teams as notification provider (issue 260)](https://github.com/Portabase/portabase/pull/313/changes/2328fa70bc2e29e24625736ea977e4603e149e0e)
@@ -252,6 +251,8 @@ Original issue listed out implementation details for adding feature. I followed 
       - updated local feature branch with changes from main, broke feature when manually testing
    - [Update database migration](https://github.com/Portabase/portabase/pull/313/changes/7132db9b450fc8e89f5b4ff0cd735bd422eaed7f)
       - added database migration so that remote database implements changes I added to database schema
+   - [add  Microsoft Teams notification provider E2E tests](https://github.com/Portabase/portabase/pull/313/changes/f3b581f2a1d1c922dd1cfc8710a18d92c4296524)
+      - added end to end tests for microsoft teams notification feature
 
 
 - **Approach decisions:**
@@ -261,7 +262,7 @@ Original issue listed out implementation details for adding feature. I followed 
 
 ## Pull Request
 
-**PR Link:** [GitHub PR URL when submitted](https://github.com/Portabase/portabase/pull/313)
+**PR Link:** [feat: Add Microsoft Teams as notification provider (issue 260)](https://github.com/Portabase/portabase/pull/313)
 
 **PR Description:** 
 - Adds Microsoft Teams as notification provider #260 
@@ -287,6 +288,10 @@ src/features/notifications/notifications.types.ts
 - Updated schema: src/db/schema/09_notification-channel.ts
 
 ### Validation 
+- Screen recording successful testing of Microsoft Teams notification:
+
+https://github.com/user-attachments/assets/994edebb-cce2-4d74-b983-87081d31168d
+
 - Screenshots demonstrating:
 #### “Notification Channel” dialog showing Microsoft Teams as an available provider
 <img width="493" height="485" alt="“Notification Channel” dialog showing Microsoft Teams as an available provider" src="https://github.com/user-attachments/assets/7559b5c1-207d-4518-9d91-5fabb0a7ac31" />
@@ -302,10 +307,17 @@ src/features/notifications/notifications.types.ts
 
 
 **Maintainer Feedback:**
-- [Date]: [Summary of feedback received]
-- [Date]: [How you addressed it]
+- [6/9/26]: [Maintainer asked to attach screenshots of feature integration and asked if I had access to a Microsoft teams account so they could use it for the review.](https://github.com/Portabase/portabase/issues/260#issuecomment-4663777829)
+- [6/10/26]: [I attached screenshots to reply, let them know I did not have access to a microsoft test account, informed them of the alternative I used for testing, and let them know I would do research on how to get hands on a Microsoft account that would grant ability to test the feature.](https://github.com/Portabase/portabase/issues/260#issuecomment-4671727831)
 
-**Status:** [Awaiting review / Iterating / Approved / Merged]
+- [6/18/26]: [Maintainer asked if I had been able to find a test account](https://github.com/Portabase/portabase/issues/260#issuecomment-4745488986)
+- [6/18/26] [ Informed them not yet, but that I had come accross a method and would try it out. ](https://github.com/Portabase/portabase/issues/260#issuecomment-4745615972)
+-  [6/18/26] [Maintainer informed me that they would insist on testing with a real Microsoft Teams webhook to avoid issues in production later](https://github.com/Portabase/portabase/issues/260#issuecomment-4745638123)
+- [6/18/26] [Maintainer assurred me that PR seemed good and would only need testing with a real webhook to be approved](https://github.com/Portabase/portabase/pull/313#issuecomment-4745792973)
+- [6/18/26] [I informed maintainer that I had been able to test the feature with a Microsoft Teams webhook, provided screen recording of test, and provided instructions on how to gain access to a Microsoft Teams business account in order to replicate testing.](https://github.com/Portabase/portabase/pull/313#issuecomment-4746813192)
+
+
+**Status:** [ Merged]
 
 ---
 
@@ -313,20 +325,25 @@ src/features/notifications/notifications.types.ts
 
 ### Technical Skills Gained
 
-[What you learned technically]
+- Drizzle ORM & PostgreSQL Migrations: Learned how Drizzle tracks state via snapshot.json files, how to generate new SQL migration files (drizzle-kit generate), and the difference between applying migrations normally versus force-syncing the schema (drizzle-kit push) when local volumes get out of sync.
+- Playwright E2E Testing: Gained exposure to end-to-end testing architecture, specifically how Playwright interacts with the UI, mocks user inputs using regex locators (getByLabel(/Teams Webhook URL/)), and tests both valid and invalid server-action flows.
+- Docker Volume Management: Learned how to safely destroy and rebuild local PostgreSQL data volumes (docker-compose down -v) to reset corrupted local migration states.
 
 ### Challenges Overcome
 
-[What was hard and how you solved it]
+- Testing Infrastructure Access: 
+   - The most significant external hurdle was securing access to a Microsoft account with the appropriate permissions to generate a live Microsoft Teams webhook. Neither I nor the reviewers initally had access to such an account, but it was critical for manually verifying the end-to-end integration before merging the PR.
+- Silent Data Mismatches: 
+   - Faced a bug where the form wouldn't render or validate because the internal state ("microsoft-teams") didn't match the strict Zod literal and switch statement ("teams"). Solved this by auditing the string identifiers across the UI helpers, schemas, and action files to ensure absolute uniformity.
 
 ### What I'd Do Differently Next Time
 
-[Reflection on your process]
+- Pull Upstream Earlier: 
+   - To avoid massiveconflicts, I will frequently git pull from the main branch during development, especially before generating database migrations, to ensure my local repo is perfectly synchronized with the rest of the team's work.
 
 ---
 
 ## Resources Used
 
-- [Link to helpful documentation]
-- [Tutorial or Stack Overflow post that helped]
-- [GitHub issues or discussions that helped]
+- [Drizzle ORM Migrations Documentation](https://orm.drizzle.team/docs/kit-overview)
+- [Microsoft Business Account free trial](https://www.microsoft.com/en-us/microsoft-365/business/microsoft-365-business-standard-one-month-trial)
